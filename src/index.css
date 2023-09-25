@@ -1,0 +1,20 @@
+@font-face {
+  font-family: "Recursive";
+  src:
+    url("Recursive.woff2") format("woff2");
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    #root {
+        padding: 0;
+    }
+
+    html {
+        background: hsl(240deg, 2%, 96%);
+        font-family: Recursive, system-ui, sans-serif;
+    }
+}
