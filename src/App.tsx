@@ -2,7 +2,7 @@ import { Routes, Route, Outlet, NavLink, useNavigate } from 'react-router-dom';
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import SignIn from './components/auth/SignIn';
 import { useAuth } from './components/auth/useAuth';
-import logo from './assets/logo.svg';
+import logo from './assets/brand.svg';
 
 const Root =
   () => {
@@ -19,7 +19,7 @@ const Root =
           >
             Projects
           </NavLink>
-          <img src={logo} />
+          <img src={logo} className='w-16' />
           <div
             className="text-sm"
             onClick={async () => {

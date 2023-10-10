@@ -1,39 +1,64 @@
-import React, { useRef, useState } from 'react';
+import React, { useReducer, useRef } from 'react';
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "./useAuth"
-import logo from '../../assets/logo.svg';
+import logo from '../../assets/brand.svg';
 
 type FieldProps = {
   name: string
   type: string
-  required: boolean
+  required?: boolean
 }
+
+type State = {
+  valid: boolean
+}
+
+type Action =
+  | { type: "valid" }
+  | { type: "invalid" }
+
+const validator =
+  (validity: State, action: Action) => {
+    switch (action.type) {
+      case "valid": return {
+        ...validity,
+        valid: true
+      }
+      case "invalid": return {
+        ...validity,
+        valid: false
+      }
+    }
+  }
 
 const Field =
   ({ name, type, required = false }: FieldProps) => {
 
     const ref = useRef<HTMLInputElement>(null)
-    const [validity, setValidity] = useState<ValidityState | null>(null)
+    const [validity, dispatch] = useReducer(validator, { valid: false })
 
     const validate: React.ChangeEventHandler<HTMLInputElement> =
       ({ target }) => {
-        setValidity(target.validity)
+        target.validity.valid
+          ? dispatch({ type: "valid" })
+          : dispatch({ type: "invalid" })
       }
-
-    console.log("rendered")
 
     return (
       <div className="flex flex-col gap-1.5">
-
         <label
-          className="uppercase text-[11px] text-[#2F3339] font-semibold">{name}</label>
-        <input
-          ref={ref}
-          style={{ outline: 'none' }}
-          className={`w-full text-[13px] h-[40px] px-4`}
-          type={type}
-          onChange={validate}
-          required={required} />
+          className="uppercase text-[13px] text-[#2F3339] font-medium">{name}</label>
+        <div>
+          <input
+            ref={ref}
+            autoComplete='false'
+            style={{ outline: 'none' }}
+            className={`peer w-full h-[47px] px-5 hover:bg-[#efefef]`}
+            type={type}
+            onChange={validate}
+            required={required} />
+          <div className="w-0 peer-focus:w-full border-b-[3px] border-black transition-all" />
+        </div>
       </div>
     )
   }
@@ -47,8 +72,8 @@ const Form =
     return (
       <form noValidate
         onSubmit={e => e.preventDefault()}
-        style={{ width: 375 }}
-        className="w-1/2 flex flex-col gap-6">
+        style={{ width: 475 }}
+        className="w-1/2 flex flex-col gap-12">
         {children}
       </form>
     )
@@ -64,7 +89,12 @@ const SignIn =
         style={{ width: '100vw', height: '100vh' }}
         className="flex justify-center items-center">
         <div className="flex flex-col items-center">
-          <img src={logo} style={{ width: 75 }} className="mb-20" />
+          <div className="mb-20">
+            <img src={logo} style={{ width: 95 }} />
+            <div className='uppercase flex justify-between font-bold text-[#2F2D23] mt-1'>
+              {"PROJECTS".split('').map(l => <span>{l}</span>)}
+            </div>
+          </div>
           <Form>
             <Field
               name="email"
@@ -75,9 +105,9 @@ const SignIn =
               type="password" />
             <button
               className={`
-                w-full h-[40px] p-4
+                w-full h-[47px] p-4 mt-4
                 flex items-center justify-center
-                bg-[#272830] text-white text-xs uppercase font-semibold tracking-wider`}
+                bg-[#272830] hover:bg-[#33343D] text-white text-[15px] uppercase font-semibold tracking-widest`}
               onClick={async () => {
                 const { data: { session } } = await signIn({ email: "test@naktrak.com.au", password: "password" })
                 if (session)

@@ -1,8 +1,9 @@
+import type { ReactElement } from 'react'
 import { Navigate } from "react-router-dom";
 import { useAuth } from './useAuth'
 
 type Props = {
-  children: React.ReactElement
+  children: ReactElement
 }
 
 const ProtectedRoute =
